@@ -158,6 +158,8 @@ class CellSize:
             diluent,
             diluent_mol_frac
     ):
+        # todo: this is where rates need to be modified for the sensitivity analysis
+        # todo: this will go a lot faster if I build a lookup for the unmodified solution rather than recalculating it every time
         gas = ct.Solution(mech)
         gas.set_equivalence_ratio(
             phi,
