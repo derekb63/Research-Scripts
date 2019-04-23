@@ -12,7 +12,6 @@ CREATED BY:
 """
 
 import cantera as ct
-import os
 
 
 def _enforce_species_list(species):
@@ -47,48 +46,42 @@ def solution_with_inerts(
         reactions=reactions
     )
 
-if __name__ == '__main__':
-    # # build a test mechanism with inert oxygen
-    # base_mech = 'gri30'
-    # test_mech = 'test_mech'
-    # file_types = ['.cti', '.xml']
-    # funcs = [make_inert_cti, make_inert_xml]
-    # inert_species = ['O2']
-    # init_temp = 1000
-    # init_press = ct.one_atm
-    # for ftype, func in zip(file_types, funcs):
-    #     mechs = [base_mech + ftype, test_mech + ftype]
-    #     _, _, file_out = _get_file_locations(mechs[0], mechs[1])
-    #
-    #     func(mechs[0], inert_species, mechs[1])
-    #     gases = [ct.Solution(m) for m in mechs]
-    #     for idx, g in enumerate(gases):
-    #         g.set_equivalence_ratio(1, 'H2', 'O2')
-    #         init_mf = g.mole_fraction_dict()['O2']
-    #         g.TP = init_temp, init_press
-    #         r = ct.Reactor(g)
-    #         n = ct.ReactorNet([r])
-    #         n.advance_to_steady_state()
-    #         print(mechs[idx])
-    #         print('-'*len(mechs[idx]))
-    #         print('# reactions:     {:1.0f}'.format(
-    #             len(g.reaction_equations()))
-    #         )
-    #         print('final temp:      {:1.0f} K'.format(
-    #             r.thermo.TP[0])
-    #         )
-    #         print('final pressure:  {:1.0f} atm'.format(
-    #             r.thermo.TP[1]/ct.one_atm)
-    #         )
-    #         print('Y_02 init/final: {:0.3f} / {:0.3f}'.format(
-    #             init_mf,
-    #             r.thermo.mole_fraction_dict()['O2']
-    #         ))
-    #         print()
-    #
-    #     # clean up
-    #     os.remove(file_out)
 
+def single_reaction_sensitivity(
+        gas,
+        idx_rxn,
+        f,
+        dk_i=1e-2
+):
+    """
+    Calculates the normalized sensitivity of some function f the ith reaction:
+
+                            s_i = (k_i / f) / (df / dk_i)                    (1)
+
+    using the following steps:
+        1. Calculate f
+        2. Log values of f and k_i
+        3. Perturb reaction i by the value p (i.e. the arrhenius constant A
+           becomes (1+dk_i)*A
+        4. Recalculate f
+        5. Calculate df
+        6. Calculate and return the normalized sensitivity coefficient, s_i
+
+    Parameters
+    ----------
+    gas
+    idx_rxn
+    f
+    dk_i
+
+    Returns
+    -------
+
+    """
+    pass
+
+
+if __name__ == '__main__':
     mechanism = 'gri30.cti'
 
     rxns = ct.Reaction.listFromFile(mechanism)
